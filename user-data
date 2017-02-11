@@ -1,0 +1,6 @@
+#!/bin/bash
+
+sudo apt-get update
+sudo apt-get install tinyproxy -y
+sudo sed -i.bak '/^Allow/d' /etc/tinyproxy.conf
+sudo service tinyproxy restart

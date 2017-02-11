@@ -1,0 +1,17 @@
+{
+  "name": "aws-proxy",
+  "version": "0.0.1",
+  "description": "Run HTTP proxy server on AWS EC2 Spot instance with tinyproxy",
+  "bin": {
+    "instant-proxy": "app.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.10.0",
+    "meow": "^3.7.0"
+  }
+}
