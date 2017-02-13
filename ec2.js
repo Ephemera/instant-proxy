@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 
 AWS.config.update({ region: 'us-east-2' });
 const ec2 = new AWS.EC2();
+const FILE = './request-id'
 
 function spotPriceHistory(params, callback) {
   const NOW = new Date();
@@ -44,31 +45,33 @@ function requestSpotInstance(params, callback) {
 
   ec2.requestSpotInstances(spotParams, (err, data) => {
     if (err) console.error(err, err.stack);
-    fs.writeFileSync('./request-id', data['SpotInstanceRequests'][0]['SpotInstanceRequestId']);
+    fs.writeFileSync(FILE, data['SpotInstanceRequests'][0]['SpotInstanceRequestId']);
     callback(data);
   });
 }
 
 function cancelSpotInstance(params, callback) {
-  const requestId = fs.readFileSync('./request-id', 'utf8');
+  const requestId = fs.readFileSync(FILE, 'utf8');
   const spotParams = {
     SpotInstanceRequestIds: [requestId],
   };
   ec2.cancelSpotInstanceRequests(spotParams, (err, data) => {
     if (err) console.error(err, err.stack);
-    fs.unlinkSync('./request-id');
+    fs.unlinkSync(FILE);
     callback(data);
   });
 }
 
 function describeSpotInstance(params, callback) {
-  const requestId = fs.readFileSync('./request-id', 'utf8');
+  if (!fs.existsSync(FILE)) return callback('file not exists');
+
+  const requestId = fs.readFileSync(FILE, 'utf8');
   const spotParams = {
     SpotInstanceRequestIds: [requestId],
   };
   ec2.describeSpotInstanceRequests(spotParams, (err, data) => {
     if (err) console.error(err, err.stack);
-    callback(data);
+    callback(null, data);
   });
 }
 
@@ -88,7 +91,7 @@ function terminateInstances(params, callback) {
   };
   ec2.terminateInstances(instanceParams, (err, data) => {
     if (err) console.error(err, err.stack);
-    fs.unlinkSync('./request-id');
+    fs.unlinkSync(FILE);
     callback(data);
   });
 }
@@ -100,7 +103,9 @@ function start(params, callback) {
 }
 
 function finish(params, callback) {
-  describeSpotInstance(params, (data) => {
+  describeSpotInstance(params, (err, data) => {
+    if (err) return callback(err);
+
     const instanceParams = {
       instance_ids: data['SpotInstanceRequests'].map(r => r['InstanceId']),
     };
@@ -109,7 +114,9 @@ function finish(params, callback) {
 }
 
 function ip(params, callback) {
-  describeSpotInstance(params, (data) => {
+  describeSpotInstance(params, (err, data) => {
+    if (err) return callback(err);
+
     const instanceParams = {
       instance_ids: data['SpotInstanceRequests'].map(r => r['InstanceId']),
     };
