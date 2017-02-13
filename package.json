@@ -1,5 +1,5 @@
 {
-  "name": "aws-proxy",
+  "name": "instant-proxy",
   "version": "0.0.1",
   "description": "Run HTTP proxy server on AWS EC2 Spot instance with tinyproxy",
   "bin": {
@@ -8,10 +8,28 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": {
+    "name": "GyuYong Jung",
+    "email": "obliviscence@gmail.com"
+  },
+  "repository": "Ephemera/instant-proxy",
   "license": "MIT",
+  "engines": {
+    "node": ">=4"
+  },
   "dependencies": {
     "aws-sdk": "^2.10.0",
     "meow": "^3.7.0"
-  }
+  },
+  "keywords": [
+    "proxy",
+    "server",
+    "instant",
+    "cli",
+    "aws",
+    "ec2",
+    "spot",
+    "instance",
+    "tinyproxy"
+  ]
 }
