@@ -22,10 +22,8 @@ const cli = meow(`
 
 const input = cli.input[0];
 
-if (input === undefined) {
+if (input === undefined || !ec2.hasOwnProperty(input)) {
   cli.showHelp();
 } else {
-  ec2[input]({}, (data) => {
-    console.log(util.inspect(data, { showHidden: true, depth: null }));
-  });
+  ec2[input]().then(console.log, console.error)
 }
